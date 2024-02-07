@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>滚动文字</title>
+    <style>
+      body {
+        background: rgba(42, 61, 75, 0.295);
+        padding: 20px;
+      }
+
+      marquee {
+        font-weight: bolder;
+        color: white;
+      }
+
+      .main {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .direction {
+        margin: 1% 0;
+        background-color: #7fff0064;
+      }
+
+      .behavior {
+        margin: 1% 0;
+        background-color: #f6ff0075;
+      }
+
+      .fs-btn {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+      }
+
+      #gen {
+        font-size: 40rem;
+      }
+
+      /* #gen:fullscreen {
+        background-color: transparent;
+      } */
+    </style>
+  </head>
+  <body>
+    <body>
+      <div class="main">
+        <div>
+          <div>
+            <!-- 滚动方向选择 -->
+            <label for="direction">滚动方向：</label>
+            <label for="direction-up">
+              <input
+                type="radio"
+                id="direction-up"
+                name="direction"
+                value="up"
+              />
+              上
+            </label>
+            <label for="direction-down">
+              <input
+                type="radio"
+                id="direction-down"
+                name="direction"
+                value="down"
+              />
+              下
+            </label>
+            <label for="direction-left">
+              <input
+                type="radio"
+                id="direction-left"
+                name="direction"
+                value="left"
+              />
+              左
+            </label>
+            <label for="direction-right">
+              <input
+                type="radio"
+                id="direction-right"
+                name="direction"
+                value="right"
+              />
+              右
+            </label>
+          </div>
+
+          <!-- 滚动行为选择 -->
+          <div>
+            <label for="behavior">滚动行为：</label>
+            <label for="behavior-cycle">
+              <input
+                type="radio"
+                id="behavior-cycle"
+                name="behavior"
+                value="scroll"
+              />
+              循环
+            </label>
+            <label for="behavior-one-way">
+              <input
+                type="radio"
+                id="behavior-one-way"
+                name="behavior"
+                value="slide"
+              />
+              单向
+            </label>
+            <label for="behavior-back-and-forth">
+              <input
+                type="radio"
+                id="behavior-back-and-forth"
+                name="behavior"
+                value="alternate"
+              />
+              往复
+            </label>
+          </div>
+
+          <!-- 滚动速度输入 -->
+          <label for="speed">滚动速度（数字值）：</label>
+          <input
+            type="number"
+            id="speed"
+            name="speed"
+            min="60"
+            placeholder="请输入滚动速度"
+          />
+
+          <label for="scrolltext">编辑内容：</label>
+          <input
+            type="text"
+            id="cont"
+            name="cont"
+            placeholder="请输入滚动文字"
+          />
+
+          <br />
+          <label for="bg-color">背景色：</label>
+          <input
+            type="color"
+            id="bg-color"
+            name="bg-color"
+            placeholder="请选择背景色"
+          />
+
+          <label for="font-color">字体颜色：</label>
+          <input
+            type="color"
+            id="font-color"
+            name="font-color"
+            value="#ffffff"
+            placeholder="请选择字体颜色"
+          />
+
+          <button onclick="genScroll()">生成</button>
+
+          <button onclick="toggleFs()" class="fs-btn" tooltip="全屏">
+            全屏 ▢
+          </button>
+        </div>
+        <!-- <div class="direction">
+          <marquee direction="up">UP</marquee>
+          <marquee direction="down">DOWN</marquee>
+          <marquee direction="left">LEFT</marquee>
+          <marquee direction="right">RIGHT</marquee>
+        </div>
+
+        <div class="behavior">
+          <marquee behavior="scroll">scroll</marquee>
+          <marquee behavior="slide">slide</marquee>
+          <marquee behavior="alternate">alternate</marquee>
+        </div> -->
+
+        <div id="gen"></div>
+      </div>
+    </body>
+  </body>
+
+  <footer>
+    <script>
+      let fs = false;
+      // const html = document.querySelector("html");
+      const html = document.getElementById("gen");
+      function toggleFs() {
+        fs ? exitFullScreen() : enterFullScreen();
+        fs = !fs;
+      }
+
+      function enterFullScreen() {
+        html
+          .requestFullscreen()
+          .then(() => {
+            console.log(`success`);
+          })
+          .catch((e) => {
+            console.error(`Enter fulll screen error`);
+          });
+      }
+
+      function exitFullScreen() {
+        if (document.exitFullscreen) {
+          document
+            .exitFullscreen()
+            .then(() => {
+              console.log(`success`);
+            })
+            .catch((e) => {
+              console.error(`Enter fulll screen error`);
+            });
+        } else {
+          console.log(`Unsupported`);
+        }
+      }
+
+      function genScroll() {
+        // 获取滚动方向的选择值
+        let direction = document.querySelector(
+          'input[name="direction"]:checked'
+        )?.value;
+
+        // 获取滚动行为的选择值
+        let behavior = document.querySelector(
+          'input[name="behavior"]:checked'
+        )?.value;
+
+        // 获取滚动速度输入框的值
+        let speed = document.getElementById("speed")?.value;
+
+        const cont = document.getElementById("cont")?.value;
+        const bgColor = document.getElementById("bg-color")?.value;
+        const fontColor = document.getElementById("font-color")?.value;
+
+        if (direction || behavior || speed || cont) {
+          const marq = document.createElement("marquee");
+          marq.style.height = "100%";
+          marq.setAttribute("direction", direction || "right");
+          marq.setAttribute("behavior", behavior || "scroll");
+          marq.setAttribute("scrollamount", speed || 60);
+          if (bgColor) marq.style.backgroundColor = bgColor;
+          if (fontColor) marq.style.color = fontColor;
+          if (cont) {
+            marq.innerText = cont;
+
+            const genCont = document.getElementById("gen");
+            genCont.innerHTML = "";
+            document.getElementById("gen").appendChild(marq);
+          }
+        }
+      }
+    </script>
+  </footer>
+</html>
